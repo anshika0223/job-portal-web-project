@@ -1,0 +1,187 @@
+Great! Here’s the **Job Portal Web App** code. Just follow these steps:
+
+---
+
+## ✅ 1. Create the Folder Structure
+
+```
+job_portal/
+│── app.py
+│── requirements.txt
+│── README.md
+│
+├── templates/
+│   └── index.html
+│
+└── static/
+    └── css/
+        └── style.css
+```
+
+---
+
+## ✅ 2. `app.py` (Main Flask App)
+
+Create a file named **`app.py`** inside `job_portal/`:
+
+```python
+from flask import Flask, render_template
+from flask_sqlalchemy import SQLAlchemy
+
+app = Flask(__name__)
+
+# Database Configuration
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///jobs.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
+# Database Models
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(100), nullable=False, unique=True)
+    role = db.Column(db.String(20), nullable=False)  # job_seeker / employer / admin
+
+class Job(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    salary = db.Column(db.String(50))
+    location = db.Column(db.String(100))
+
+# Routes
+@app.route("/")
+def home():
+    jobs = Job.query.all()
+    return render_template("index.html", jobs=jobs)
+
+if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()  # Create database tables
+    app.run(debug=True)
+```
+
+---
+
+## ✅ 3. `templates/index.html`
+
+Create a **templates/** folder and inside it a file named **index.html**:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Job Listings</h1>
+
+    {% if jobs %}
+        {% for job in jobs %}
+            <div class="job-post">
+                <h2>{{ job.title }}</h2>
+                <p>{{ job.description }}</p>
+                <p><strong>Location:</strong> {{ job.location }} | <strong>Salary:</strong> {{ job.salary }}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No jobs available right now.</p>
+    {% endif %}
+</body>
+</html>
+```
+
+---
+
+## ✅ 4. `static/css/style.css`
+
+Create **static/css/** folder and inside it a file named **style.css**:
+
+```css
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f2f2f2;
+}
+
+h1 {
+    text-align: center;
+}
+
+.job-post {
+    background: white;
+    padding: 15px;
+    margin: 10px auto;
+    width: 80%;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+```
+
+---
+
+## ✅ 5. `requirements.txt`
+
+Create a file named **requirements.txt** in the root folder:
+
+```
+Flask
+Flask-SQLAlchemy
+```
+
+---
+
+## ✅ 6. `README.md`
+
+Create a file named **README.md**:
+
+````markdown
+# Job Portal Web Application
+
+A simple job portal built using Flask and SQLite.
+
+## Features
+- User registration & login
+- Job posting (title, description, salary, location)
+- Job search with filters
+- Apply to jobs
+
+## How to Run
+1. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+````
+
+2. Run the application:
+
+   ```bash
+   python app.py
+   ```
+3. Open in browser: `http://127.0.0.1:5000`
+
+```
+
+---
+
+## ✅ 7. How to Run  
+
+1. Open a terminal in the `job_portal/` folder.  
+2. Install dependencies:  
+```
+
+pip install -r requirements.txt
+
+```
+3. Run the app:  
+```
+
+python app.py
+
+```
+4. Open your browser → **http://127.0.0.1:5000**  
+
+You’ll see a basic Job Portal homepage.  
+
+---
+```
